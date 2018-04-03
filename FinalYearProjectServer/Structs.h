@@ -16,7 +16,7 @@ struct ClientConnectPacket
 
 struct ClientDisconnectPacket
 {
-	char Username[20];
+	int ClientID;
 };
 
 struct Vector3

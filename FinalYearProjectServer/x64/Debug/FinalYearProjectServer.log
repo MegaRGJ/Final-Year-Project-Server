@@ -1,3 +1,1 @@
-﻿  FinalYearProjectServer.cpp
-  FinalYearProjectServer.vcxproj -> C:\Users\j015271e\Downloads\Final-Year-Project-Server\x64\Debug\FinalYearProjectServer.exe
-  FinalYearProjectServer.vcxproj -> C:\Users\j015271e\Downloads\Final-Year-Project-Server\x64\Debug\FinalYearProjectServer.pdb (Full PDB)
+﻿C:\Users\Ryan-PC\Downloads\Final-Year-Project-Server\FinalYearProjectServer\FinalYearProjectServer.vcxproj(235,5): error : This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is ..\packages\boost_fiber-vc140.1.66.0.0\build\native\boost_fiber-vc140.targets.

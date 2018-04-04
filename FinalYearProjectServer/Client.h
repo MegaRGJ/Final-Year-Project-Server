@@ -1,6 +1,6 @@
 #pragma once
 #include "boost\asio.hpp"
-#include "Structs.h"
+#include "StructsAndConsts.h"
 using boost::asio::ip::udp;
 
 class Client

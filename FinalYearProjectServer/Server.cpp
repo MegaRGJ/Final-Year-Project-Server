@@ -3,19 +3,12 @@
 
 Server::Server()
 {
-
+	m_ClientListSize = 0;
 }
 
 Server::~Server()
 {
 
-}
-
-void Server::StartReceiveThread()
-{
-	boost::asio::io_service io_service;
-	FinalYearProjectServer FinalYearProjectServer(io_service);
-	io_service.run();
 }
 
 void Server::RunServer()
@@ -24,7 +17,7 @@ void Server::RunServer()
 	{
 		std::cout << "Server Starting..." << std::endl;
 
-		std::thread t(&StartReceiveThread);
+		std::thread t(&Server::StartReceiveThread, this);
 		t.detach();
 
 		double previousTime = GetCurrentTime();
@@ -40,7 +33,8 @@ void Server::RunServer()
 			while (lag >= MS_INTERVAL)
 			{
 				std::cout << "Frame. " << lag << std::endl;
-				char* a = new char['1'];
+
+				HandlePacketData();
 
 				
 				lag -= MS_INTERVAL;
@@ -53,13 +47,38 @@ void Server::RunServer()
 	}
 }
 
+void Server::StartReceiveThread()
+{
+	boost::asio::io_service io_service;
+	m_Communication = new Communication(io_service);
+	io_service.run();
+}
 
 void Server::HandlePacketData()
 {
+	UpdateConnectionData();
 
-	//getpacketconnect
-	//getpacketdisconect
-	//getpacketpos
+}
+
+void Server::UpdateConnectionData()
+{
+	std::vector<ConnectData> connectionData = m_Communication->GetAllConnectData();
+
+	for (size_t i = 0; i < connectionData.size(); i++)
+	{
+		Client client = Client(connectionData[i].EndPoint, connectionData[i].Packet, m_ClientListSize);
+		m_ClientList.push_back(client);
+		ConfirmConnectionPacketArrived();
+		++m_ClientListSize;
+	}
+}
+
+void Server::ConfirmConnectionPacketArrived()
+{
+	int id = *m_ClientList[m_ClientListSize].GetID();
+
+	//CreatePacket to send
+	m_Communication->Send(m_ClientList[id].GetEndpoint(), );
 }
 
 //void FinalYearProjectServer::UpdateClientPositionData(ClientPositionPacket packet)

@@ -19,29 +19,30 @@ public:
 	T pop()
 	{
 		std::unique_lock<std::mutex> lock(mutex);
-		T var;
-		std::swap(var, queue.front());
+		T var = std::move(queue.front());
 		queue.pop();
 		return var;
 	}
 	
-	T[]  popAll()
+	std::vector<T> popAll()
 	{
 		std::unique_lock<std::mutex> lock(mutex);
-		int size = queue.size();
-		T[size] arr;
-		
+
+		size_t size = queue.size();
+
+		std::vector<T> vector;
+		vector.reserve(size);
+
 		for (size_t i = 0; i < size; i++)
 		{
-			arr[i] = queue.front;
+			vector.push_back(queue.front());
 			queue.pop();
 		}
-
-		return T;
+		
+		return vector;
 	}
 
-	)
-	bool empty()
+	bool isEmpty()
 	{
 		std::unique_lock<std::mutex> lock(mutex);
 		return queue.empty();

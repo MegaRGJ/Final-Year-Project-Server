@@ -45,8 +45,8 @@ void Communication::HandleReceive(const boost::system::error_code& error, std::s
 		std::copy(std::begin(m_ReceiveBuffer), std::end(m_ReceiveBuffer), receivedPacket);
 
 		int PacketID = Serialisation32Bit::DeserialisePacketType(receivedPacket);
-		auto RemoteEndpoint = m_RemoteEndPoint;
 
+		//Use function table thing maybe?
 
 		if (PacketID == POSITION_ID)
 		{
@@ -56,7 +56,9 @@ void Communication::HandleReceive(const boost::system::error_code& error, std::s
 		else if(PacketID = CONNECT_ID)
 		{
 			ClientConnectPacket packet = Serialisation32Bit::DeserialiseConnectPacket(receivedPacket);
-			m_ConnectPacketQueue.push(packet);
+			
+			ConnectData data(m_RemoteEndPoint, packet);
+			m_NewClientsQueue.push(data);
 		}
 		else if(PacketID = DISCONNECT_ID)
 		{
@@ -75,7 +77,7 @@ void Communication::Send(udp::endpoint remoteEndpoint, char *byteArray)
 {
 	std::cout << "Starting Send." << std::endl;
 	
-	m_UDPSocket.send_to(boost::asio::buffer(byteArray, sizeof(byteArray)), remoteEndpoint);
+	m_UDPSocket.send_to(boost::asio::buffer(byteArray, sizeof(*byteArray)), remoteEndpoint);
 	std::cout << "Finsihed Send." << std::endl;
 }
 
@@ -98,24 +100,24 @@ std::vector<ClientPositionPacket> Communication::GetAllClientPositionPackets()
 	return m_PositionPacketQueue.popAll();
 }
 
-ClientConnectPacket Communication::GetClientConnectPacket()
+ConnectData Communication::GetConnectData()
 {
-	if (m_ConnectPacketQueue.isEmpty())
+	if (m_NewClientsQueue.isEmpty())
 	{
 		throw std::logic_error("Connect Packet Queue is Empty.");
 	}
 
-	return m_ConnectPacketQueue.pop();
+	return m_NewClientsQueue.pop();
 }
 
-std::vector<ClientConnectPacket> Communication::GetAllClientConnectPackets()
+std::vector<ConnectData> Communication::GetAllConnectData()
 {
-	if (m_ConnectPacketQueue.isEmpty())
+	if (m_NewClientsQueue.isEmpty())
 	{
 		throw std::logic_error("Connect Packet Queue is Empty");
 	}
 
-	return m_ConnectPacketQueue.popAll();
+	return m_NewClientsQueue.popAll();
 }
 
 ClientDisconnectPacket Communication::GetClientDisconnectPacket()

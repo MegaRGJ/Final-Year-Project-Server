@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Structs.h"
+#include "StructsAndConsts.h"
 #pragma once
 
 class Serialisation32Bit

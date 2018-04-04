@@ -1,4 +1,5 @@
 #pragma once
+#include "boost\asio.hpp"
 
 const int RECEIVE_BUFFER_SIZE = 128;
 const int POSITION_ID = 1;
@@ -24,6 +25,19 @@ struct ClientConnectPacket
 struct ClientDisconnectPacket
 {
 	int ClientID;
+};
+
+struct ConnectData
+{
+	ClientConnectPacket Packet;
+	boost::asio::ip::udp::endpoint EndPoint;
+
+	ConnectData() {}
+	ConnectData(boost::asio::ip::udp::endpoint endpoint, ClientConnectPacket packet)
+	{
+		EndPoint = endpoint;
+		Packet = packet;
+	}
 };
 
 struct Vector3

@@ -20,17 +20,16 @@ public:
 	ClientPositionPacket GetClientPositionPacket();
 	std::vector<ClientPositionPacket> GetAllClientPositionPackets();
 
-	ClientConnectPacket GetClientConnectPacket();
-	std::vector<ClientConnectPacket> GetAllClientConnectPackets();
+	ConnectData GetConnectData();
+	std::vector<ConnectData> GetAllConnectData();
 
 	ClientDisconnectPacket GetClientDisconnectPacket();
 	std::vector<ClientDisconnectPacket> GetAllClientDisconnectPackets();
-	//GET PACKETS LIKE IN CLIENT
 
 private:
 
+	Queue<ConnectData> m_NewClientsQueue;
 	Queue<ClientPositionPacket> m_PositionPacketQueue;
-	Queue<ClientConnectPacket> m_ConnectPacketQueue;
 	Queue<ClientDisconnectPacket> m_DisconnectPacketQueue;
 
 	udp::socket m_UDPSocket;
@@ -41,6 +40,6 @@ private:
 	void Receive();
 	void HandleReceive(const boost::system::error_code& error, std::size_t bytes_transferred);
 
-	void HandleSend(const boost::system::error_code& error, std::size_t bytes_transferred);
+	//void HandleSend(const boost::system::error_code& error, std::size_t bytes_transferred);
 };
 

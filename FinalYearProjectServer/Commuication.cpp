@@ -58,7 +58,7 @@ void Communication::HandleReceive(const boost::system::error_code& error, std::s
 			ClientConnectPacket packet = Serialisation32Bit::DeserialiseConnectPacket(receivedPacket);
 			
 			ConnectData data(m_RemoteEndPoint, packet);
-			m_NewClientsQueue.push(data);
+			m_ConnectDataQueue.push(data);
 		}
 		else if(PacketID = DISCONNECT_ID)
 		{
@@ -73,12 +73,45 @@ void Communication::HandleReceive(const boost::system::error_code& error, std::s
 	}
 }
 
-void Communication::Send(udp::endpoint remoteEndpoint, char *byteArray)
+void Communication::Send(udp::endpoint remoteEndpoint, const ServerPacket& packet)
 {
 	std::cout << "Starting Send." << std::endl;
-	
-	m_UDPSocket.send_to(boost::asio::buffer(byteArray, sizeof(*byteArray)), remoteEndpoint);
+
+	//clear data to be sent
+	m_SendBufferSize = 0;
+
+	//create thing that gives other things way to tell us what data to send
+	SendBuffer BufferAdapter;
+	BufferAdapter.Buffer = m_SendBuffer;
+	BufferAdapter.size = &m_SendBufferSize;
+
+	//serialise packet, giving it thing which allows it to put data in our m_SendBuffer
+	packet.Serialise(BufferAdapter);
+
+	//send data now stored in m_SendBuffer
+	m_UDPSocket.async_send_to(boost::asio::buffer(m_SendBuffer, m_SendBufferSize), remoteEndpoint,
+		boost::bind
+		(
+			&Communication::HandleSend,
+			this,
+			boost::asio::placeholders::error,
+			boost::asio::placeholders::bytes_transferred
+		));
+
+
 	std::cout << "Finsihed Send." << std::endl;
+}
+
+void Communication::HandleSend(const boost::system::error_code& error, std::size_t bytes_transferred)
+{
+	if (!error)
+	{
+
+	}
+	else
+	{
+		std::cerr << "Handle Send Error." << std::endl;
+	}
 }
 
 ClientPositionPacket Communication::GetClientPositionPacket()
@@ -102,22 +135,22 @@ std::vector<ClientPositionPacket> Communication::GetAllClientPositionPackets()
 
 ConnectData Communication::GetConnectData()
 {
-	if (m_NewClientsQueue.isEmpty())
+	if (m_ConnectDataQueue.isEmpty())
 	{
 		throw std::logic_error("Connect Packet Queue is Empty.");
 	}
 
-	return m_NewClientsQueue.pop();
+	return m_ConnectDataQueue.pop();
 }
 
 std::vector<ConnectData> Communication::GetAllConnectData()
 {
-	if (m_NewClientsQueue.isEmpty())
+	if (m_ConnectDataQueue.isEmpty())
 	{
 		throw std::logic_error("Connect Packet Queue is Empty");
 	}
 
-	return m_NewClientsQueue.popAll();
+	return m_ConnectDataQueue.popAll();
 }
 
 ClientDisconnectPacket Communication::GetClientDisconnectPacket()
@@ -138,4 +171,19 @@ std::vector<ClientDisconnectPacket> Communication::GetAllClientDisconnectPackets
 	}
 
 	return m_DisconnectPacketQueue.popAll();
+}
+
+bool Communication::IsConnectDataQueueEmpty()
+{
+	return m_ConnectDataQueue.isEmpty();
+}
+
+bool Communication::IsPositionPacketQueueEmpty()
+{
+	return m_PositionPacketQueue.isEmpty();
+}
+
+bool Communication::IsDisconnectPacketQueueEmpty()
+{
+	return m_DisconnectPacketQueue.isEmpty();
 }

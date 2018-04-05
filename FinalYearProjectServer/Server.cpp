@@ -56,7 +56,10 @@ void Server::StartReceiveThread()
 
 void Server::HandlePacketData()
 {
-	UpdateConnectionData();
+	if (!m_Communication->IsConnectDataQueueEmpty())
+	{
+		UpdateConnectionData();
+	}
 
 }
 
@@ -66,6 +69,7 @@ void Server::UpdateConnectionData()
 
 	for (size_t i = 0; i < connectionData.size(); i++)
 	{
+		std::cout << "Connected Client" << std::endl;
 		Client client = Client(connectionData[i].EndPoint, connectionData[i].Packet, m_ClientListSize);
 		m_ClientList.push_back(client);
 		ConfirmConnectionPacketArrived();
@@ -76,9 +80,7 @@ void Server::UpdateConnectionData()
 void Server::ConfirmConnectionPacketArrived()
 {
 	int id = *m_ClientList[m_ClientListSize].GetID();
-
-	//CreatePacket to send
-	m_Communication->Send(m_ClientList[id].GetEndpoint(), );
+	m_Communication->Send(m_ClientList[id].GetEndpoint(), ServerAcknowledgmentPacket {id});
 }
 
 //void FinalYearProjectServer::UpdateClientPositionData(ClientPositionPacket packet)

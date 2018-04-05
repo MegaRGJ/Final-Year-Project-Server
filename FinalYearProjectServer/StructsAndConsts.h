@@ -2,11 +2,19 @@
 #include "boost\asio.hpp"
 
 const int RECEIVE_BUFFER_SIZE = 128;
+const int SEND_BUFFER_SIZE = 128;
 const int POSITION_ID = 1;
 const int CONNECT_ID = 2;
 const int DISCONNECT_ID = 3;
+const int ACKNOWLEDGMENT_ID = 4;
 
 const double MS_INTERVAL = 1000;
+
+struct SendBuffer
+{
+	char* Buffer;
+	int* size;
+};
 
 struct ClientPositionPacket
 {
@@ -27,6 +35,23 @@ struct ClientDisconnectPacket
 	int ClientID;
 };
 
+
+struct ServerPacket
+{
+	virtual void Serialise(SendBuffer&) const = 0;
+};
+
+struct ServerAcknowledgmentPacket : ServerPacket
+{
+	int ClientID;
+	virtual void Serialise(SendBuffer&) const;
+	
+	ServerAcknowledgmentPacket(int id)
+	{
+		ClientID = id;
+	}
+};
+
 struct ConnectData
 {
 	ClientConnectPacket Packet;
@@ -39,6 +64,7 @@ struct ConnectData
 		Packet = packet;
 	}
 };
+
 
 struct Vector3
 {

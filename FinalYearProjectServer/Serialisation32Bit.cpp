@@ -35,3 +35,15 @@ ClientDisconnectPacket Serialisation32Bit::DeserialiseDisconnectPacket(char* byt
 	delete PacketTemp;
 	return Packet;
 }
+
+void Serialisation32Bit::Serialise(const ServerPacket& packet, SendBuffer& buffer)
+{
+	packet.Serialise(buffer);
+}
+
+void ServerAcknowledgmentPacket::Serialise(SendBuffer& buffer) const
+{
+	memcpy(buffer.Buffer, &ACKNOWLEDGMENT_ID, sizeof(ACKNOWLEDGMENT_ID));
+	memcpy(buffer.Buffer + 4, this, sizeof(ServerAcknowledgmentPacket));
+	*buffer.size = 8;
+}

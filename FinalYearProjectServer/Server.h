@@ -14,16 +14,22 @@ public:
 
 	void RunServer();
 	void StartReceiveThread();
-	void HandlePacketData();
+
 private:
 	Communication* m_Communication;
+	std::thread* ReceiveThread;
 
 	std::vector<Client> m_ClientList; //May need to be made thread safe.
 	int m_ClientListSize;
 
+	void HandleReceivedPacketData();
+	void SendPositionalPacketData();
+
 	void UpdateConnectionData();
+	void UpdateClientPositionData();
 	void UpdateDisconnectData();
 
 	void ConfirmConnectionPacketArrived();
+
 };
 

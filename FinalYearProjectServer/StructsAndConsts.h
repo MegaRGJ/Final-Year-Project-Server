@@ -35,7 +35,6 @@ struct ClientDisconnectPacket
 	int ClientID;
 };
 
-
 struct ServerPacket
 {
 	virtual void Serialise(SendBuffer&) const = 0;

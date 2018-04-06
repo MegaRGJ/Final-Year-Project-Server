@@ -9,7 +9,8 @@ Client::Client(udp::endpoint clientEndPoint, ClientConnectPacket packet, int cli
 	m_Position = new Vector3(0, 0, 0);
 	m_RotationY = new float(0);
 	m_ClientID = new int(clientID);
-	//Add a unquie ID
+	m_Connected = new bool(true);
+	m_SeenBy = new std::vector<Client*>(10);
 }
 
 Client::~Client()
@@ -17,6 +18,8 @@ Client::~Client()
 	delete m_Position;
 	delete m_RotationY;
 	delete m_ClientID;
+	delete m_Connected;
+	delete m_SeenBy;
 }
 
 const Vector3* Client::GetPos()
@@ -54,4 +57,32 @@ const udp::endpoint Client::GetEndpoint()
 const char* Client::GetUsername()
 {
 	return m_Username;
+}
+
+const bool* Client::GetConnectionStatus()
+{
+	return m_Connected;
+}
+
+void Client::SetConnectionStatus(bool var)
+{
+	*m_Connected = var;
+}
+
+const std::vector<Client*> Client::GetSeenByClients()
+{
+	return; // Return seen clients too the Server SendPositionalPacketData
+}
+
+void Client::AddSeenByClient(Client* client)
+{
+	m_SeenBy->push_back(client);
+}
+
+void Client::RemoveSeenByClient(Client* client)
+{
+	//m_SeenBy->erase()
+
+	//Need to make this a find based on something in the client.
+	//This will then be able to get moved out to the main fyp octree.
 }

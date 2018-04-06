@@ -8,7 +8,8 @@ Server::Server()
 
 Server::~Server()
 {
-
+	delete m_Communication;
+	delete ReceiveThread;
 }
 
 void Server::RunServer()
@@ -17,8 +18,8 @@ void Server::RunServer()
 	{
 		std::cout << "Server Starting..." << std::endl;
 
-		std::thread t(&Server::StartReceiveThread, this);
-		t.detach();
+		ReceiveThread = new std::thread(&Server::StartReceiveThread, this);
+		ReceiveThread->detach();
 
 		double previousTime = GetCurrentTime();
 		double lag = 0.0;
@@ -34,9 +35,10 @@ void Server::RunServer()
 			{
 				std::cout << "Frame. " << lag << std::endl;
 
-				HandlePacketData();
-
+				HandleReceivedPacketData();
 				
+				SendPositionalPacketData();
+
 				lag -= MS_INTERVAL;
 			}
 		}
@@ -54,13 +56,22 @@ void Server::StartReceiveThread()
 	io_service.run();
 }
 
-void Server::HandlePacketData()
+void Server::HandleReceivedPacketData()
 {
 	if (!m_Communication->IsConnectDataQueueEmpty())
 	{
 		UpdateConnectionData();
 	}
 
+	if (!m_Communication->IsPositionPacketQueueEmpty())
+	{
+		UpdateClientPositionData();
+	}
+
+	if (!m_Communication->IsDisconnectPacketQueueEmpty())
+	{
+		UpdateDisconnectData();
+	}
 }
 
 void Server::UpdateConnectionData()
@@ -77,28 +88,53 @@ void Server::UpdateConnectionData()
 	}
 }
 
+void Server::UpdateDisconnectData()
+{
+	std::vector<ClientDisconnectPacket> disconnectPacket = m_Communication->GetAllClientDisconnectPackets();
+
+	for (size_t i = 0; i < disconnectPacket.size(); i++)
+	{
+		m_ClientList[disconnectPacket[i].ClientID].SetConnectionStatus(false);
+		//--m_ClientListSize; Can't make the list small due to not reallocating id locations
+		// even so, this would not be the correct thing to do anyway need to make a system.
+		// need to send back a real id linked to location in arr.
+	}
+}
+
+void Server::UpdateClientPositionData()
+{
+	std::vector<ClientPositionPacket> positionPackets = m_Communication->GetAllClientPositionPackets();
+	
+	for (size_t i = 0; i < positionPackets.size(); i++)
+	{
+		if (m_ClientList[i].GetConnectionStatus())
+		{
+			m_ClientList[positionPackets[i].ClientID].SetPos(positionPackets[i].X, positionPackets[i].Y, positionPackets[i].Z);
+			m_ClientList[positionPackets[i].ClientID].SetRotationY(positionPackets[i].Rotation);
+		}
+	}
+
+}
+
 void Server::ConfirmConnectionPacketArrived()
 {
 	int id = *m_ClientList[m_ClientListSize].GetID();
-	m_Communication->Send(m_ClientList[id].GetEndpoint(), ServerAcknowledgmentPacket {id});
+	 (m_ClientList[id].GetEndpoint(), ServerAcknowledgmentPacket{ id });
 }
 
-//void FinalYearProjectServer::UpdateClientPositionData(ClientPositionPacket packet)
-//{
-//	m_ClientList[packet.ClientID].SetPos(packet.X, packet.Y, packet.Z);
-//	m_ClientList[packet.ClientID].SetRotationY(packet.Rotation);
-//}
-//
-//void FinalYearProjectServer::UpdateClientConnectData(ClientConnectPacket packet)
-//{
-//	Client newClient = Client(m_RemoteEndPoint, packet, m_ClientListSize);
-//
-//	m_ClientList.push_back(newClient);
-//	++m_ClientListSize;
-//}
-//
-//void FinalYearProjectServer::UpdateClientDisconnectData(ClientDisconnectPacket packet)
-//{
-//
-//	--m_ClientListSize;
-//}
+void Server::SendPositionalPacketData()
+{
+	for (size_t i = 0; i < m_ClientList.size; i++)
+	{
+		if (m_ClientList[i].GetConnectionStatus())
+		{
+			for (size_t i = 0; i < m_ClientList[i]; i++)
+			{
+				m_Communication->Send(m_ClientList[i].GetEndpoint(), )
+			}
+
+				
+		}
+	}
+}
+

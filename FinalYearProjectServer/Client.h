@@ -9,6 +9,12 @@ class Client
 public:
 	Client(udp::endpoint clientEndPoint, ClientConnectPacket packet, int clientID);
 	~Client();
+	const bool*					GetConnectionStatus();
+	void						SetConnectionStatus(bool var);
+
+	const std::vector<Client*>	GetSeenByClients();
+	void						AddSeenByClient();
+	void						RemoveSeenByClient();
 
 	const Vector3*				GetPos();
 	void						SetPos(float x, float y, float z);
@@ -23,7 +29,8 @@ private:
 	Vector3* m_Position;
 	float* m_RotationY;
 	int* m_ClientID;
+	bool* m_Connected;
 
-	//Client SeenBy[0];
+	std::vector<Client*>* m_SeenBy;
 };
 

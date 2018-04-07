@@ -1,6 +1,7 @@
 #pragma once
 #include "boost\asio.hpp"
 #include "StructsAndConsts.h"
+#include <algorithm>
 using boost::asio::ip::udp;
 
 class Client
@@ -13,8 +14,8 @@ public:
 	void						SetConnectionStatus(bool var);
 
 	const std::vector<Client*>	GetSeenByClients();
-	void						AddSeenByClient();
-	void						RemoveSeenByClient();
+	void						AddSeenByClient(Client* client);
+	void						RemoveSeenByClient(Client* client);
 
 	const Vector3*				GetPos();
 	void						SetPos(float x, float y, float z);
@@ -31,6 +32,7 @@ private:
 	int* m_ClientID;
 	bool* m_Connected;
 
+	int IndexBinarySearch(std::vector<Client*> &SeenBy, int start, int end, int id);
 	std::vector<Client*>* m_SeenBy;
 };
 

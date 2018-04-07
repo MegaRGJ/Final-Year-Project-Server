@@ -84,6 +84,15 @@ void Server::UpdateConnectionData()
 		Client client = Client(connectionData[i].EndPoint, connectionData[i].Packet, m_ClientListSize);
 		m_ClientList.push_back(client);
 		ConfirmConnectionPacketArrived();
+		
+
+		//Shit Code needs to be moved. due to last added being the latest it will not add its self.
+		for (size_t j = 0; j < m_ClientListSize - 1; j++)
+		{
+			m_ClientList[j].AddSeenByClient(&m_ClientList[m_ClientListSize]);
+		}
+		//Shit code ^^^^
+
 		++m_ClientListSize;
 	}
 }
@@ -95,6 +104,15 @@ void Server::UpdateDisconnectData()
 	for (size_t i = 0; i < disconnectPacket.size(); i++)
 	{
 		m_ClientList[disconnectPacket[i].ClientID].SetConnectionStatus(false);
+
+		//Shit Code needs to be moved. due to last added being the latest it will not add its self.
+		for (size_t j = 0; j < m_ClientListSize - 1; j++)
+		{
+			m_ClientList[j].RemoveSeenByClient(&m_ClientList[m_ClientListSize]);
+		}
+		//Shit code ^^^^
+
+
 		//--m_ClientListSize; Can't make the list small due to not reallocating id locations
 		// even so, this would not be the correct thing to do anyway need to make a system.
 		// need to send back a real id linked to location in arr.
@@ -124,13 +142,23 @@ void Server::ConfirmConnectionPacketArrived()
 
 void Server::SendPositionalPacketData()
 {
-	for (size_t i = 0; i < m_ClientList.size; i++)
+	ServerPlayerPacket packet;
+
+	for (size_t i = 0; i < m_ClientList.size(); i++)
 	{
+
+
 		if (m_ClientList[i].GetConnectionStatus())
 		{
-			for (size_t i = 0; i < m_ClientList[i]; i++)
+			//Create Packets
+			 
+
+			//Send
+			std::vector<Client*> SeenByClients = m_ClientList[i].GetSeenByClients();
+
+			for (size_t j = 0; j < SeenByClients.size(); j++)
 			{
-				m_Communication->Send(m_ClientList[i].GetEndpoint(), )
+				//m_Communication->Send(SeenByClients[j]->GetEndpoint(), );
 			}
 
 				

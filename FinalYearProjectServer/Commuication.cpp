@@ -48,7 +48,7 @@ void Communication::HandleReceive(const boost::system::error_code& error, std::s
 
 		//Use function table thing maybe?
 
-		if (PacketID == POSITION_ID)
+		if (PacketID == PLAYER_ID)
 		{
 			ClientPositionPacket packet = Serialisation32Bit::DeserialisePositionPacket(receivedPacket);
 			m_PositionPacketQueue.push(packet);

@@ -3,7 +3,8 @@
 
 const int RECEIVE_BUFFER_SIZE = 128;
 const int SEND_BUFFER_SIZE = 128;
-const int POSITION_ID = 1;
+const int USERNAME_SIZE = 20;
+const int PLAYER_ID = 1;
 const int CONNECT_ID = 2;
 const int DISCONNECT_ID = 3;
 const int ACKNOWLEDGMENT_ID = 4;
@@ -27,28 +28,12 @@ struct ClientPositionPacket
 
 struct ClientConnectPacket
 {
-	char Username[20];
+	char Username[USERNAME_SIZE];
 };
 
 struct ClientDisconnectPacket
 {
 	int ClientID;
-};
-
-struct ServerPacket
-{
-	virtual void Serialise(SendBuffer&) const = 0;
-};
-
-struct ServerAcknowledgmentPacket : ServerPacket
-{
-	int ClientID;
-	virtual void Serialise(SendBuffer&) const;
-	
-	ServerAcknowledgmentPacket(int id)
-	{
-		ClientID = id;
-	}
 };
 
 struct ConnectData
@@ -64,6 +49,45 @@ struct ConnectData
 	}
 };
 
+struct ServerPacket
+{
+	virtual void Serialise(SendBuffer&) const = 0;
+};
+
+struct ServerAcknowledgmentPacket : ServerPacket
+{
+	int ClientID;
+	virtual void Serialise(SendBuffer&) const;
+	
+	ServerAcknowledgmentPacket() {}
+	ServerAcknowledgmentPacket(int id)
+	{
+		ClientID = id;
+	}
+};
+
+struct ServerPlayerPacket : ServerPacket
+{
+	int ClientID;
+	float X;
+	float Y;
+	float Z;
+	float Rotation;
+	char Username[USERNAME_SIZE];
+
+	virtual void Serialise(SendBuffer&) const;
+
+	ServerPlayerPacket() {}
+	ServerPlayerPacket(int clientID, float x, float y, float z, float r, char username[])
+	{
+		ClientID = clientID;
+		X = x;
+		Y = y;
+		Z = z;
+		Rotation = r;
+		strcpy_s(Username, username);
+	}
+};
 
 struct Vector3
 {

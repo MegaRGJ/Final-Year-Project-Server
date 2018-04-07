@@ -71,18 +71,53 @@ void Client::SetConnectionStatus(bool var)
 
 const std::vector<Client*> Client::GetSeenByClients()
 {
-	return; // Return seen clients too the Server SendPositionalPacketData
+	return *m_SeenBy;
 }
 
 void Client::AddSeenByClient(Client* client)
 {
 	m_SeenBy->push_back(client);
+	std::sort(m_SeenBy->begin(), m_SeenBy->end(), [](const auto& a, const auto& b) {
+		return (a->GetID() < b->GetID());
+	});
 }
 
 void Client::RemoveSeenByClient(Client* client)
 {
-	//m_SeenBy->erase()
+	int clientID = *client->GetID();
+	int index = IndexBinarySearch(*m_SeenBy, 0, m_SeenBy->size(), clientID);
 
-	//Need to make this a find based on something in the client.
-	//This will then be able to get moved out to the main fyp octree.
+	if (index != -1)
+	{
+		m_SeenBy->erase(m_SeenBy->begin() + index);
+	}
+	else
+	{
+		//throw std::logic_error("Could not remove, client not found!");
+	}
+}
+
+int Client::IndexBinarySearch(std::vector<Client*> &SeenBy, int start, int end, int id)
+{
+	while (start <= end)
+	{
+		int i = start + (end - start) / 2;
+		int clientID = *SeenBy[i]->GetID();
+		//Is it in the middle?
+		if (clientID == id)
+		{
+			return i;
+		}
+
+		//If greater don't search left side
+		if (clientID < id)
+		{
+			start = i + 1;
+		}
+		else //If smaller don't search right side
+		{
+			end = i - 1;
+		}
+	}
+	return -1;
 }

@@ -2,10 +2,12 @@
   Timer.cpp
 c:\users\j015271e\downloads\final-year-project-server\finalyearprojectserver\timer.cpp(19): warning C4244: 'return': conversion from '__int64' to 'int', possible loss of data
   Server.cpp
-c:\users\j015271e\downloads\final-year-project-server\finalyearprojectserver\server.cpp(27): error C2276: '&': illegal operation on bound member function expression
+c:\users\j015271e\downloads\final-year-project-server\finalyearprojectserver\server.cpp(90): warning C4018: '<': signed/unsigned mismatch
+c:\users\j015271e\downloads\final-year-project-server\finalyearprojectserver\server.cpp(109): warning C4018: '<': signed/unsigned mismatch
   Serialisation32Bit.cpp
   main.cpp
-  FinalYearProjectServer.cpp
-c:\users\j015271e\downloads\final-year-project-server\finalyearprojectserver\finalyearprojectserver.cpp(11): error C2065: 'memebool': undeclared identifier
+  Commuication.cpp
   Client.cpp
   Generating Code...
+  FinalYearProjectServer.vcxproj -> C:\Users\j015271e\Downloads\Final-Year-Project-Server\Debug\FinalYearProjectServer.exe
+  FinalYearProjectServer.vcxproj -> C:\Users\j015271e\Downloads\Final-Year-Project-Server\Debug\FinalYearProjectServer.pdb (Full PDB)

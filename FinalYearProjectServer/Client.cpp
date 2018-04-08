@@ -10,7 +10,7 @@ Client::Client(udp::endpoint clientEndPoint, ClientConnectPacket packet, int cli
 	m_RotationY = new float(0);
 	m_ClientID = new int(clientID);
 	m_Connected = new bool(true);
-	m_SeenBy = new std::vector<Client*>(10);
+	m_SeenBy = new std::vector<Client*>();
 }
 
 Client::~Client()

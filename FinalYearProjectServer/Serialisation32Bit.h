@@ -15,7 +15,7 @@ public:
 	static ClientConnectPacket DeserialiseConnectPacket(char* byteArray);
 	static ClientDisconnectPacket DeserialiseDisconnectPacket(char* byteArray);
 
-	static void Serialise(const ServerPacket& packet, SendBuffer& buffer);
+	static void Serialise(ServerPacket& packet, SendBuffer& buffer);
 private:
 
 };

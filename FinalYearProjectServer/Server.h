@@ -19,7 +19,7 @@ private:
 	Communication* m_Communication;
 	std::thread* ReceiveThread;
 
-	std::vector<Client> m_ClientList; //May need to be made thread safe.
+	std::vector<Client*> m_ClientList;
 	int m_ClientListSize;
 
 	void HandleReceivedPacketData();

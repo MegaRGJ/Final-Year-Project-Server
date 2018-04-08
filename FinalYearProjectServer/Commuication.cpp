@@ -19,7 +19,6 @@ Communication::~Communication()
 
 void Communication::Receive()
 {
-	std::cout << "Receiveing..." << std::endl;
 	m_UDPSocket.async_receive_from
 	(
 		boost::asio::buffer(m_ReceiveBuffer),
@@ -32,7 +31,6 @@ void Communication::Receive()
 			boost::asio::placeholders::bytes_transferred
 		)
 	);
-	std::cout << "Receiveing... Out" << std::endl;
 }
 
 void Communication::HandleReceive(const boost::system::error_code& error, std::size_t bytes_transferred)
@@ -73,10 +71,8 @@ void Communication::HandleReceive(const boost::system::error_code& error, std::s
 	}
 }
 
-void Communication::Send(udp::endpoint remoteEndpoint, const ServerPacket& packet)
+void Communication::Send(udp::endpoint remoteEndpoint, ServerPacket& packet)
 {
-	std::cout << "Starting Send." << std::endl;
-
 	//clear data to be sent
 	m_SendBufferSize = 0;
 
@@ -97,16 +93,13 @@ void Communication::Send(udp::endpoint remoteEndpoint, const ServerPacket& packe
 			boost::asio::placeholders::error,
 			boost::asio::placeholders::bytes_transferred
 		));
-
-
-	std::cout << "Finsihed Send." << std::endl;
 }
 
 void Communication::HandleSend(const boost::system::error_code& error, std::size_t bytes_transferred)
 {
 	if (!error)
 	{
-
+		std::cout << "Finsihed Send." << std::endl;
 	}
 	else
 	{

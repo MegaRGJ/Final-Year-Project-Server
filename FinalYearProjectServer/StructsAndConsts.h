@@ -9,7 +9,7 @@ const int CONNECT_ID = 2;
 const int DISCONNECT_ID = 3;
 const int ACKNOWLEDGMENT_ID = 4;
 
-const double MS_INTERVAL = 1000;
+const double MS_INTERVAL = 16;
 
 struct SendBuffer
 {
@@ -51,13 +51,13 @@ struct ConnectData
 
 struct ServerPacket
 {
-	virtual void Serialise(SendBuffer&) const = 0;
+	virtual void Serialise(SendBuffer&) = 0;
 };
 
 struct ServerAcknowledgmentPacket : ServerPacket
 {
 	int ClientID;
-	virtual void Serialise(SendBuffer&) const;
+	virtual void Serialise(SendBuffer&);
 	
 	ServerAcknowledgmentPacket() {}
 	ServerAcknowledgmentPacket(int id)
@@ -68,14 +68,14 @@ struct ServerAcknowledgmentPacket : ServerPacket
 
 struct ServerPlayerPacket : ServerPacket
 {
-	int ClientID;
-	float X;
-	float Y;
-	float Z;
-	float Rotation;
+	int ClientID; 
+	float X; 
+	float Y; 
+	float Z; 
+	float Rotation; 
 	char Username[USERNAME_SIZE];
 
-	virtual void Serialise(SendBuffer&) const;
+	virtual void Serialise(SendBuffer&);
 
 	ServerPlayerPacket() {}
 	ServerPlayerPacket(int clientID, float x, float y, float z, float r, char username[])
@@ -95,6 +95,7 @@ struct Vector3
 	float Y;
 	float Z;
 
+	Vector3() {}
 	Vector3(float x, float y, float z)
 	{
 		X = x;

@@ -76,12 +76,10 @@ void Communication::Send(udp::endpoint remoteEndpoint, ServerPacket& packet)
 	//clear data to be sent
 	m_SendBufferSize = 0;
 
-	//create thing that gives other things way to tell us what data to send
 	SendBuffer BufferAdapter;
 	BufferAdapter.Buffer = m_SendBuffer;
 	BufferAdapter.size = &m_SendBufferSize;
 
-	//serialise packet, giving it thing which allows it to put data in our m_SendBuffer
 	packet.Serialise(BufferAdapter);
 
 	//send data now stored in m_SendBuffer

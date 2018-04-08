@@ -8,8 +8,14 @@ Server::Server()
 
 Server::~Server()
 {
+
 	delete m_Communication;
 	delete ReceiveThread;
+
+	for (size_t i = 0; i < m_ClientList.size(); i++)
+	{
+		delete m_ClientList[i];
+	}
 }
 
 void Server::RunServer()
@@ -151,7 +157,7 @@ void Server::SendPositionalPacketData()
 		{
 			//Create Packets
 			ServerPlayerPacket packet;
-
+			
 			packet.ClientID = *m_ClientList[i]->GetID();
 			packet.X = 50;//m_ClientList[i]->GetPos()->X;
 			packet.Y = 50;//m_ClientList[i]->GetPos()->Y;

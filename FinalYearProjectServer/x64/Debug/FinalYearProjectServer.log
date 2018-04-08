@@ -1,1 +1,12 @@
-﻿C:\Users\Ryan-PC\Downloads\Final-Year-Project-Server\FinalYearProjectServer\FinalYearProjectServer.vcxproj(235,5): error : This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is ..\packages\boost_fiber-vc140.1.66.0.0\build\native\boost_fiber-vc140.targets.
+﻿  stdafx.cpp
+  Timer.cpp
+d:\github repos\final-year-project-server\finalyearprojectserver\timer.cpp(19): warning C4244: 'return': conversion from '__int64' to 'int', possible loss of data
+  Server.cpp
+  Serialisation32Bit.cpp
+  main.cpp
+  Commuication.cpp
+  Client.cpp
+d:\github repos\final-year-project-server\finalyearprojectserver\client.cpp(88): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
+  FinalYearProjectServer.vcxproj -> D:\Github Repos\Final-Year-Project-Server\x64\Debug\FinalYearProjectServer.exe
+  FinalYearProjectServer.vcxproj -> D:\Github Repos\Final-Year-Project-Server\x64\Debug\FinalYearProjectServer.pdb (Full PDB)

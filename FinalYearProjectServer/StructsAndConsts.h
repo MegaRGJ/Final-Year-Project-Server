@@ -1,4 +1,5 @@
 #pragma once
+#pragma pack 1
 #include "boost\asio.hpp"
 
 const int RECEIVE_BUFFER_SIZE = 128;
@@ -74,7 +75,6 @@ struct ServerPlayerPacket : ServerPacket
 	float Z; 
 	float Rotation; 
 	char Username[USERNAME_SIZE];
-
 	virtual void Serialise(SendBuffer&);
 
 	ServerPlayerPacket() {}

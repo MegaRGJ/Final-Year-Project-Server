@@ -1,47 +1,9 @@
-﻿  stdafx.cpp
-  Timer.cpp
-d:\github repos\final-year-project-server\finalyearprojectserver\timer.cpp(19): warning C4244: 'return': conversion from '__int64' to 'int', possible loss of data
-  Server.cpp
+﻿  Server.cpp
 d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(2): warning C4081: expected '('; found 'constant'
 d:\github repos\final-year-project-server\finalyearprojectserver\server.cpp(95): warning C4018: '<': signed/unsigned mismatch
 d:\github repos\final-year-project-server\finalyearprojectserver\server.cpp(116): warning C4018: '<': signed/unsigned mismatch
-d:\github repos\final-year-project-server\finalyearprojectserver\server.cpp(147): error C2248: 'ServerAcknowledgmentPacket::ServerAcknowledgmentPacket': cannot access private member declared in class 'ServerAcknowledgmentPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(64): note: see declaration of 'ServerAcknowledgmentPacket::ServerAcknowledgmentPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(58): note: see declaration of 'ServerAcknowledgmentPacket'
-d:\github repos\final-year-project-server\finalyearprojectserver\server.cpp(159): error C2248: 'ServerPlayerPacket::ServerPlayerPacket': cannot access private member declared in class 'ServerPlayerPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(80): note: see declaration of 'ServerPlayerPacket::ServerPlayerPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(70): note: see declaration of 'ServerPlayerPacket'
-d:\github repos\final-year-project-server\finalyearprojectserver\server.cpp(161): error C2248: 'ServerPlayerPacket::ClientID': cannot access private member declared in class 'ServerPlayerPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(72): note: see declaration of 'ServerPlayerPacket::ClientID'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(70): note: see declaration of 'ServerPlayerPacket'
-d:\github repos\final-year-project-server\finalyearprojectserver\server.cpp(162): error C2248: 'ServerPlayerPacket::X': cannot access private member declared in class 'ServerPlayerPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(73): note: see declaration of 'ServerPlayerPacket::X'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(70): note: see declaration of 'ServerPlayerPacket'
-d:\github repos\final-year-project-server\finalyearprojectserver\server.cpp(163): error C2248: 'ServerPlayerPacket::Y': cannot access private member declared in class 'ServerPlayerPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(74): note: see declaration of 'ServerPlayerPacket::Y'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(70): note: see declaration of 'ServerPlayerPacket'
-d:\github repos\final-year-project-server\finalyearprojectserver\server.cpp(164): error C2248: 'ServerPlayerPacket::Z': cannot access private member declared in class 'ServerPlayerPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(75): note: see declaration of 'ServerPlayerPacket::Z'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(70): note: see declaration of 'ServerPlayerPacket'
-d:\github repos\final-year-project-server\finalyearprojectserver\server.cpp(165): error C2248: 'ServerPlayerPacket::Rotation': cannot access private member declared in class 'ServerPlayerPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(76): note: see declaration of 'ServerPlayerPacket::Rotation'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(70): note: see declaration of 'ServerPlayerPacket'
-d:\github repos\final-year-project-server\finalyearprojectserver\server.cpp(166): error C2248: 'ServerPlayerPacket::Username': cannot access private member declared in class 'ServerPlayerPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(77): note: see declaration of 'ServerPlayerPacket::Username'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(70): note: see declaration of 'ServerPlayerPacket'
-d:\github repos\final-year-project-server\finalyearprojectserver\server.cpp(174): error C2243: 'type cast': conversion from 'ServerPlayerPacket *' to 'ServerPacket &' exists, but is inaccessible
   Serialisation32Bit.cpp
 d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(2): warning C4081: expected '('; found 'constant'
-d:\github repos\final-year-project-server\finalyearprojectserver\serialisation32bit.cpp(41): error C2248: 'ServerPacket::Serialise': cannot access private member declared in class 'ServerPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(55): note: see declaration of 'ServerPacket::Serialise'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(54): note: see declaration of 'ServerPacket'
-  main.cpp
-d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(2): warning C4081: expected '('; found 'constant'
-  Commuication.cpp
-d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(2): warning C4081: expected '('; found 'constant'
-d:\github repos\final-year-project-server\finalyearprojectserver\commuication.cpp(83): error C2248: 'ServerPacket::Serialise': cannot access private member declared in class 'ServerPacket'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(55): note: see declaration of 'ServerPacket::Serialise'
-  d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(54): note: see declaration of 'ServerPacket'
-  Client.cpp
-d:\github repos\final-year-project-server\finalyearprojectserver\structsandconsts.h(2): warning C4081: expected '('; found 'constant'
   Generating Code...
+  FinalYearProjectServer.vcxproj -> D:\Github Repos\Final-Year-Project-Server\Debug\FinalYearProjectServer.exe
+  FinalYearProjectServer.vcxproj -> D:\Github Repos\Final-Year-Project-Server\Debug\FinalYearProjectServer.pdb (Full PDB)

@@ -49,17 +49,9 @@ void ServerAcknowledgmentPacket::Serialise(SendBuffer& buffer)
 }
 void ServerPlayerPacket::Serialise(SendBuffer& buffer)
 {	
-	ServerPlayerPacket* killme = new ServerPlayerPacket();
-	killme->ClientID = this->ClientID;
-	killme->X = this->X;
-	killme->Y = this->Y;
-	killme->Z = this->Z;
-	killme->Rotation = this->Rotation;
-	strcpy_s(killme->Username, this->Username);
-
 	memcpy(buffer.Buffer, &PLAYER_ID, sizeof(PLAYER_ID));
-	memcpy(buffer.Buffer, killme, sizeof(ServerPlayerPacket));
-
+	memcpy(buffer.Buffer + 4, this, sizeof(ServerPlayerPacket));
+	
 	*buffer.size = 72;
 }
 

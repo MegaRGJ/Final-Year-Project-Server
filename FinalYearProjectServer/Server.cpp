@@ -144,7 +144,7 @@ void Server::UpdateClientPositionData()
 void Server::ConfirmConnectionPacketArrived()
 {
 	int id = *m_ClientList[m_ClientListSize]->GetID();
-	 (m_ClientList[id]->GetEndpoint(), ServerAcknowledgmentPacket{ id });
+	m_Communication->Send(m_ClientList[id]->GetEndpoint(), ServerAcknowledgmentPacket{ id });
 }
 
 void Server::SendPositionalPacketData()
@@ -155,9 +155,28 @@ void Server::SendPositionalPacketData()
 
 		if (m_ClientList[i]->GetConnectionStatus())
 		{
+			////Create Packets
+			//ServerPlayerPacket packet;
+			//
+			//packet.ClientID = *m_ClientList[i]->GetID();
+			//packet.X = 50;//m_ClientList[i]->GetPos()->X;
+			//packet.Y = 50;//m_ClientList[i]->GetPos()->Y;
+			//packet.Z = 50;//m_ClientList[i]->GetPos()->Z;
+			//packet.Rotation = *m_ClientList[i]->GetRotationY();
+			//memcpy(packet.Username, m_ClientList[i]->GetUsername(), USERNAME_SIZE);
+
+			////Send
+			//std::vector<Client*> SeenByClients = m_ClientList[i]->GetSeenByClients();
+
+			//for (size_t j = 0; j < SeenByClients.size(); j++)
+			//{
+			//	std::cout << "Send To: " << SeenByClients[j]->GetUsername() << std::endl;
+			//	m_Communication->Send(SeenByClients[j]->GetEndpoint(), packet);
+			//}
+
 			//Create Packets
 			ServerPlayerPacket packet;
-			
+
 			packet.ClientID = *m_ClientList[i]->GetID();
 			packet.X = 50;//m_ClientList[i]->GetPos()->X;
 			packet.Y = 50;//m_ClientList[i]->GetPos()->Y;
@@ -171,9 +190,8 @@ void Server::SendPositionalPacketData()
 			for (size_t j = 0; j < SeenByClients.size(); j++)
 			{
 				std::cout << "Send To: " << SeenByClients[j]->GetUsername() << std::endl;
-				m_Communication->Send(SeenByClients[j]->GetEndpoint(), packet);
+				m_Communication->Send(SeenByClients[j]->GetEndpoint(), ServerPlayerPacket{ packet });
 			}
-
 				
 		}
 	}

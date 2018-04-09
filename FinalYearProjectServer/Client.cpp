@@ -4,7 +4,7 @@
 Client::Client(udp::endpoint clientEndPoint, ClientConnectPacket packet, int clientID)
 {
 	m_EndPoint = clientEndPoint;
-	strncpy_s(m_Username, packet.Username, 20);
+	memcpy(m_Username, packet.Username, USERNAME_SIZE);
 
 	m_Position = new Vector3(0, 0, 0);
 	m_RotationY = new float(0);

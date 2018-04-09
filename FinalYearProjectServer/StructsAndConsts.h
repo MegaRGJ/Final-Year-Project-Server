@@ -2,8 +2,8 @@
 #pragma pack 1
 #include "boost\asio.hpp"
 
-const int RECEIVE_BUFFER_SIZE = 256;
-const int SEND_BUFFER_SIZE = 128;
+const int RECEIVE_BUFFER_SIZE = 4096;
+const int SEND_BUFFER_SIZE = 4096;
 const int USERNAME_SIZE = 20;
 const int PLAYER_ID = 1;
 const int CONNECT_ID = 2;

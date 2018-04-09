@@ -14,10 +14,11 @@ public:
 
 	void RunServer();
 	void StartReceiveThread();
-
+	void StartInputThread();
 private:
 	Communication* m_Communication;
-	std::thread* ReceiveThread;
+	std::thread* m_ReceiveThread;
+	std::thread* m_InputThread;
 
 	std::vector<Client*> m_ClientList;
 	int m_ClientListSize;
@@ -29,7 +30,7 @@ private:
 	void UpdateClientPositionData();
 	void UpdateDisconnectData();
 
-	void ConfirmConnectionPacketArrived();
+	void ConfirmAcknowledgmentPacketArrived(int clientid);
 
 };
 

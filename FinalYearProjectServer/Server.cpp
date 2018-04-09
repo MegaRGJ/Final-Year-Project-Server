@@ -10,7 +10,8 @@ Server::~Server()
 {
 
 	delete m_Communication;
-	delete ReceiveThread;
+	delete m_ReceiveThread;
+	delete m_InputThread;
 
 	for (size_t i = 0; i < m_ClientList.size(); i++)
 	{
@@ -24,8 +25,11 @@ void Server::RunServer()
 	{
 		std::cout << "Server Starting..." << std::endl;
 
-		ReceiveThread = new std::thread(&Server::StartReceiveThread, this);
-		ReceiveThread->detach();
+		m_ReceiveThread = new std::thread(&Server::StartReceiveThread, this);
+		m_ReceiveThread->detach();
+		
+		m_InputThread = new std::thread(&Server::StartInputThread, this);
+		m_InputThread->detach();
 
 		double previousTime = GetCurrentTime();
 		double lag = 0.0;
@@ -62,6 +66,16 @@ void Server::StartReceiveThread()
 	io_service.run();
 }
 
+void Server::StartInputThread()
+{
+	std::string input;
+	std::cin >> input;
+
+	if (input == "Close")
+	{
+		Server::~Server();
+	}
+}
 void Server::HandleReceivedPacketData()
 {
 	if (!m_Communication->IsConnectDataQueueEmpty())
@@ -89,7 +103,7 @@ void Server::UpdateConnectionData()
 		std::cout << "Connected Client" << std::endl;
 		Client* client = new Client(connectionData[i].EndPoint, connectionData[i].Packet, m_ClientListSize);
 		m_ClientList.push_back(client);
-		ConfirmConnectionPacketArrived();
+		ConfirmAcknowledgmentPacketArrived(m_ClientListSize);
 		
 		//Shit Code needs to be moved. due to last added being the latest it will not add its self.
 		for (size_t j = 0; j < m_ClientListSize; j++)
@@ -111,7 +125,7 @@ void Server::UpdateDisconnectData()
 	for (size_t i = 0; i < disconnectPacket.size(); i++)
 	{
 		m_ClientList[disconnectPacket[i].ClientID]->SetConnectionStatus(false);
-
+		ConfirmAcknowledgmentPacketArrived(disconnectPacket[i].ClientID);
 		//Shit Code needs to be moved. due to last added being the latest it will not add its self.
 		for (size_t j = 0; j < m_ClientListSize - 1; j++)
 		{
@@ -132,7 +146,7 @@ void Server::UpdateClientPositionData()
 	
 	for (size_t i = 0; i < positionPackets.size(); i++)
 	{
-		if (m_ClientList[i]->GetConnectionStatus())
+		if (m_ClientList[positionPackets[i].ClientID]->GetConnectionStatus())
 		{
 			m_ClientList[positionPackets[i].ClientID]->SetPos(positionPackets[i].X, positionPackets[i].Y, positionPackets[i].Z);
 			m_ClientList[positionPackets[i].ClientID]->SetRotationY(positionPackets[i].Rotation);
@@ -141,10 +155,9 @@ void Server::UpdateClientPositionData()
 
 }
 
-void Server::ConfirmConnectionPacketArrived()
+void Server::ConfirmAcknowledgmentPacketArrived(int clientid)
 {
-	int id = *m_ClientList[m_ClientListSize]->GetID();
-	m_Communication->Send(m_ClientList[id]->GetEndpoint(), ServerAcknowledgmentPacket{ id });
+	m_Communication->Send(m_ClientList[clientid]->GetEndpoint(), ServerAcknowledgmentPacket{ clientid });
 }
 
 void Server::SendPositionalPacketData()
@@ -155,25 +168,6 @@ void Server::SendPositionalPacketData()
 
 		if (m_ClientList[i]->GetConnectionStatus())
 		{
-			////Create Packets
-			//ServerPlayerPacket packet;
-			//
-			//packet.ClientID = *m_ClientList[i]->GetID();
-			//packet.X = 50;//m_ClientList[i]->GetPos()->X;
-			//packet.Y = 50;//m_ClientList[i]->GetPos()->Y;
-			//packet.Z = 50;//m_ClientList[i]->GetPos()->Z;
-			//packet.Rotation = *m_ClientList[i]->GetRotationY();
-			//memcpy(packet.Username, m_ClientList[i]->GetUsername(), USERNAME_SIZE);
-
-			////Send
-			//std::vector<Client*> SeenByClients = m_ClientList[i]->GetSeenByClients();
-
-			//for (size_t j = 0; j < SeenByClients.size(); j++)
-			//{
-			//	std::cout << "Send To: " << SeenByClients[j]->GetUsername() << std::endl;
-			//	m_Communication->Send(SeenByClients[j]->GetEndpoint(), packet);
-			//}
-
 			//Create Packets
 			ServerPlayerPacket packet;
 
@@ -189,7 +183,7 @@ void Server::SendPositionalPacketData()
 
 			for (size_t j = 0; j < SeenByClients.size(); j++)
 			{
-				std::cout << "Send To: " << SeenByClients[j]->GetID() << std::endl;
+				std::cout << "Send To: " << *SeenByClients[j]->GetID() << std::endl;
 				m_Communication->Send(SeenByClients[j]->GetEndpoint(), ServerPlayerPacket{ packet });
 			}
 				

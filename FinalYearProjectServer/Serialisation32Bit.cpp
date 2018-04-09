@@ -43,15 +43,16 @@ void Serialisation32Bit::Serialise(ServerPacket& packet, SendBuffer& buffer)
 
 void ServerAcknowledgmentPacket::Serialise(SendBuffer& buffer)
 {
+	memcpy(buffer.Buffer, this, sizeof(ServerAcknowledgmentPacket));
 	memcpy(buffer.Buffer, &ACKNOWLEDGMENT_ID, sizeof(ACKNOWLEDGMENT_ID));
-	memcpy(buffer.Buffer + 4, this, sizeof(ServerAcknowledgmentPacket));
 	*buffer.size = 8;
 }
 void ServerPlayerPacket::Serialise(SendBuffer& buffer)
 {	
+	//memcpy(buffer.Buffer, &PLAYER_ID, sizeof(PLAYER_ID));
+
+	memcpy(buffer.Buffer, this, sizeof(ServerPlayerPacket));
 	memcpy(buffer.Buffer, &PLAYER_ID, sizeof(PLAYER_ID));
-	memcpy(buffer.Buffer + 4, this, sizeof(ServerPlayerPacket));
-	
-	*buffer.size = 72;
+	*buffer.size = 72; 
 }
 

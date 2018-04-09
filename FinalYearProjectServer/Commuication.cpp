@@ -39,7 +39,7 @@ void Communication::HandleReceive(const boost::system::error_code& error, std::s
 	{
 		std::cout << "Received Packet." << std::endl;
 		
-		char receivedPacket[128];
+		char receivedPacket[RECEIVE_BUFFER_SIZE];
 		std::copy(std::begin(m_ReceiveBuffer), std::end(m_ReceiveBuffer), receivedPacket);
 
 		int PacketID = Serialisation32Bit::DeserialisePacketType(receivedPacket);

@@ -178,9 +178,9 @@ void Server::SendPositionalPacketData()
 			ServerPlayerPacket packet;
 
 			packet.ClientID = *m_ClientList[i]->GetID();
-			packet.X = 50;//m_ClientList[i]->GetPos()->X;
-			packet.Y = 50;//m_ClientList[i]->GetPos()->Y;
-			packet.Z = 50;//m_ClientList[i]->GetPos()->Z;
+			packet.X = m_ClientList[i]->GetPos()->X;
+			packet.Y = m_ClientList[i]->GetPos()->Y;
+			packet.Z = m_ClientList[i]->GetPos()->Z;
 			packet.Rotation = *m_ClientList[i]->GetRotationY();
 			memcpy(packet.Username, m_ClientList[i]->GetUsername(), USERNAME_SIZE);
 
@@ -189,7 +189,7 @@ void Server::SendPositionalPacketData()
 
 			for (size_t j = 0; j < SeenByClients.size(); j++)
 			{
-				std::cout << "Send To: " << SeenByClients[j]->GetUsername() << std::endl;
+				std::cout << "Send To: " << SeenByClients[j]->GetID() << std::endl;
 				m_Communication->Send(SeenByClients[j]->GetEndpoint(), ServerPlayerPacket{ packet });
 			}
 				

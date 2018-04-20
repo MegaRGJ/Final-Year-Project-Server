@@ -13,10 +13,10 @@ public:
 	const bool*					GetConnectionStatus();
 	void						SetConnectionStatus(bool var);
 
-	const std::vector<Client*>	GetSeenByClients();
-	void						AddSeenByClient(Client* client);
-	void						RemoveSeenByClient(Client* client);
-
+	const std::vector<Client*>	GetSeenClients();
+	void						ClearSeenClients();
+	void						AddSeenClient(Client* client);
+	void						RemoveSeenClient(Client* client);
 	const Vector3*				GetPos();
 	void						SetPos(float x, float y, float z);
 	const float*				GetRotationY();
@@ -33,6 +33,6 @@ private:
 	bool* m_Connected;
 
 	int IndexBinarySearch(std::vector<Client*> &SeenBy, int start, int end, int id);
-	std::vector<Client*>* m_SeenBy;
+	std::vector<Client*>* m_Seen;
 };
 

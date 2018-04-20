@@ -3,20 +3,15 @@
 
 Server::Server()
 {
-	m_ClientListSize = 0;
+	m_IM = new InterestManagement();
 }
 
 Server::~Server()
 {
-
 	delete m_Communication;
 	delete m_ReceiveThread;
 	delete m_InputThread;
-
-	for (size_t i = 0; i < m_ClientList.size(); i++)
-	{
-		delete m_ClientList[i];
-	}
+	delete m_IM;
 }
 
 void Server::RunServer()
@@ -47,6 +42,8 @@ void Server::RunServer()
 
 				HandleReceivedPacketData();
 				
+				m_IM->UpdateInterest();
+
 				SendPositionalPacketData();
 
 				lag -= MS_INTERVAL;
@@ -101,20 +98,9 @@ void Server::UpdateConnectionData()
 	for (size_t i = 0; i < connectionData.size(); i++)
 	{
 		std::cout << "Connected Client" << std::endl;
-		Client* client = new Client(connectionData[i].EndPoint, connectionData[i].Packet, m_ClientListSize);
-		m_ClientList.push_back(client);
-		ConfirmAcknowledgmentPacketArrived(m_ClientListSize);
-		
-		//Shit Code needs to be moved. due to last added being the latest it will not add its self.
-		for (size_t j = 0; j < m_ClientListSize; j++)
-		{
-			if (m_ClientListSize != j)
-			{
-				m_ClientList[j]->AddSeenByClient(m_ClientList[m_ClientListSize]);
-			}
-		}
-		++m_ClientListSize;
-		//Shit code ^^^^
+		Client* client = new Client(connectionData[i].EndPoint, connectionData[i].Packet, m_IM->GetClientListSize());
+		m_IM->AddClient(client);
+		ConfirmAcknowledgmentPacketArrived(m_IM->GetClientListSize() - 1);
 	}
 }
 
@@ -124,19 +110,8 @@ void Server::UpdateDisconnectData()
 
 	for (size_t i = 0; i < disconnectPacket.size(); i++)
 	{
-		m_ClientList[disconnectPacket[i].ClientID]->SetConnectionStatus(false);
 		ConfirmAcknowledgmentPacketArrived(disconnectPacket[i].ClientID);
-		//Shit Code needs to be moved. due to last added being the latest it will not add its self.
-		for (size_t j = 0; j < m_ClientListSize - 1; j++)
-		{
-			m_ClientList[j]->RemoveSeenByClient(m_ClientList[m_ClientListSize]);
-		}
-		//Shit code ^^^^
-
-
-		//--m_ClientListSize; Can't make the list small due to not reallocating id locations
-		// even so, this would not be the correct thing to do anyway need to make a system.
-		// need to send back a real id linked to location in arr.
+		m_IM->GetClientList()[disconnectPacket[i].ClientID]->SetConnectionStatus(false);
 	}
 }
 
@@ -146,10 +121,10 @@ void Server::UpdateClientPositionData()
 	
 	for (size_t i = 0; i < positionPackets.size(); i++)
 	{
-		if (m_ClientList[positionPackets[i].ClientID]->GetConnectionStatus())
+		if (m_IM->GetClientList()[positionPackets[i].ClientID]->GetConnectionStatus())
 		{
-			m_ClientList[positionPackets[i].ClientID]->SetPos(positionPackets[i].X, positionPackets[i].Y, positionPackets[i].Z);
-			m_ClientList[positionPackets[i].ClientID]->SetRotationY(positionPackets[i].Rotation);
+			m_IM->GetClientList()[positionPackets[i].ClientID]->SetPos(positionPackets[i].X, positionPackets[i].Y, positionPackets[i].Z);
+			m_IM->GetClientList()[positionPackets[i].ClientID]->SetRotationY(positionPackets[i].Rotation);
 		}
 	}
 
@@ -157,37 +132,54 @@ void Server::UpdateClientPositionData()
 
 void Server::ConfirmAcknowledgmentPacketArrived(int clientid)
 {
-	m_Communication->Send(m_ClientList[clientid]->GetEndpoint(), ServerAcknowledgmentPacket{ clientid });
+	m_Communication->Send(m_IM->GetClientList()[clientid]->GetEndpoint(), ServerAcknowledgmentPacket{ clientid });
 }
 
 void Server::SendPositionalPacketData()
 {
-	for (size_t i = 0; i < m_ClientList.size(); i++)
+	try
 	{
-	
-
-		if (m_ClientList[i]->GetConnectionStatus())
+		for (size_t i = 0; i < m_IM->GetClientListSize(); i++)
 		{
-			//Create Packets
-			ServerPlayerPacket packet;
-
-			packet.ClientID = *m_ClientList[i]->GetID();
-			packet.X = m_ClientList[i]->GetPos()->X;
-			packet.Y = m_ClientList[i]->GetPos()->Y;
-			packet.Z = m_ClientList[i]->GetPos()->Z;
-			packet.Rotation = *m_ClientList[i]->GetRotationY();
-			memcpy(packet.Username, m_ClientList[i]->GetUsername(), USERNAME_SIZE);
-
-			//Send
-			std::vector<Client*> SeenByClients = m_ClientList[i]->GetSeenByClients();
-
-			for (size_t j = 0; j < SeenByClients.size(); j++)
+			if (m_IM->GetClientList()[i]->GetConnectionStatus())
 			{
-				std::cout << "Send To: " << *SeenByClients[j]->GetID() << std::endl;
-				m_Communication->Send(SeenByClients[j]->GetEndpoint(), ServerPlayerPacket{ packet });
+				//Create Packets
+				ServerPlayerPacket packet;
+
+				packet.ClientID = *m_IM->GetClientList()[i]->GetID();
+				packet.X = m_IM->GetClientList()[i]->GetPos()->X;
+				packet.Y = m_IM->GetClientList()[i]->GetPos()->Y;
+				packet.Z = m_IM->GetClientList()[i]->GetPos()->Z;
+				packet.Rotation = *m_IM->GetClientList()[i]->GetRotationY();
+				memcpy(packet.Username, m_IM->GetClientList()[i]->GetUsername(), USERNAME_SIZE);
+
+				int seenSize = m_IM->GetClientList()[i]->GetSeenClients().size();
+				//Send
+				for (size_t j = 0; j < seenSize; j++)
+				{
+					if (m_IM->GetClientList()[j]->GetConnectionStatus())
+					{
+						m_Communication->Send(m_IM->GetClientList()[j]->GetEndpoint(), ServerPlayerPacket{ packet });
+					}
+				}
+
+				//Send too all
+				//for (size_t j = 0; j < m_IM->GetClientListSize(); j++)
+				//{
+				//	std::cout << "Send To: " << m_IM->GetClientList()[j]->GetID() << std::endl;
+
+				//	if (m_IM->GetClientList()[j]->GetConnectionStatus())
+				//	{
+				//		m_Communication->Send(m_IM->GetClientList()[j]->GetEndpoint(), ServerPlayerPacket{ packet });
+				//	}
+				//}
+
 			}
-				
 		}
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
 	}
 }
 

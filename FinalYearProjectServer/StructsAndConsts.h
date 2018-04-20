@@ -10,6 +10,8 @@ const int CONNECT_ID = 2;
 const int DISCONNECT_ID = 3;
 const int ACKNOWLEDGMENT_ID = 4;
 
+const float AURA_DISTANCE = 50;
+
 const double MS_INTERVAL = 16;
 
 struct SendBuffer

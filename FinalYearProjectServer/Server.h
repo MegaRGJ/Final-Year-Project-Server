@@ -5,6 +5,7 @@
 #include "atltime.h" // GetCurrentTime
 #include "boost\asio.hpp"
 #include "Commuication.h"
+#include "InterestManagement.h"
 
 class Server
 {
@@ -17,11 +18,9 @@ public:
 	void StartInputThread();
 private:
 	Communication* m_Communication;
+	InterestManagement* m_IM;
 	std::thread* m_ReceiveThread;
 	std::thread* m_InputThread;
-
-	std::vector<Client*> m_ClientList;
-	int m_ClientListSize;
 
 	void HandleReceivedPacketData();
 	void SendPositionalPacketData();

@@ -10,7 +10,7 @@ Client::Client(udp::endpoint clientEndPoint, ClientConnectPacket packet, int cli
 	m_RotationY = new float(0);
 	m_ClientID = new int(clientID);
 	m_Connected = new bool(true);
-	m_SeenBy = new std::vector<Client*>();
+	m_Seen = new std::vector<Client*>();
 }
 
 Client::~Client()
@@ -19,7 +19,7 @@ Client::~Client()
 	delete m_RotationY;
 	delete m_ClientID;
 	delete m_Connected;
-	delete m_SeenBy;
+	delete m_Seen;
 }
 
 const Vector3* Client::GetPos()
@@ -69,27 +69,32 @@ void Client::SetConnectionStatus(bool var)
 	*m_Connected = var;
 }
 
-const std::vector<Client*> Client::GetSeenByClients()
+const std::vector<Client*> Client::GetSeenClients()
 {
-	return *m_SeenBy;
+	return *m_Seen;
 }
 
-void Client::AddSeenByClient(Client* client)
+void Client::AddSeenClient(Client* client)
 {
-	m_SeenBy->push_back(client);
-	std::sort(m_SeenBy->begin(), m_SeenBy->end(), [](const auto& a, const auto& b) {
+	m_Seen->push_back(client);
+	std::sort(m_Seen->begin(), m_Seen->end(), [](const auto& a, const auto& b) {
 		return (a->GetID() < b->GetID());
 	});
 }
 
-void Client::RemoveSeenByClient(Client* client)
+void Client::ClearSeenClients()
+{
+	m_Seen->clear();
+}
+
+void Client::RemoveSeenClient(Client* client)
 {
 	int clientID = *client->GetID();
-	int index = IndexBinarySearch(*m_SeenBy, 0, m_SeenBy->size(), clientID);
+	int index = IndexBinarySearch(*m_Seen, 0, m_Seen->size(), clientID);
 
 	if (index != -1)
 	{
-		m_SeenBy->erase(m_SeenBy->begin() + index);
+		m_Seen->erase(m_Seen->begin() + index);
 	}
 	else
 	{

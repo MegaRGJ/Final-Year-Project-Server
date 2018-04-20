@@ -149,6 +149,8 @@
   <ItemGroup>
     <ClInclude Include="Client.h" />
     <ClInclude Include="Commuication.h" />
+    <ClInclude Include="InterestManagement.h" />
+    <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Serialisation32Bit.h" />
     <ClInclude Include="Server.h" />
@@ -160,7 +162,9 @@
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Commuication.cpp" />
+    <ClCompile Include="InterestManagement.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="Serialisation32Bit.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="stdafx.cpp">

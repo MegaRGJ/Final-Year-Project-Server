@@ -41,13 +41,13 @@ void Serialisation32Bit::Serialise(ServerPacket& packet, SendBuffer& buffer)
 	packet.Serialise(buffer);
 }
 
-void ServerAcknowledgmentPacket::Serialise(SendBuffer& buffer)
+void ServerAcknowledgmentPacket::Serialise(SendBuffer& buffer) const
 {
 	memcpy(buffer.Buffer, this, sizeof(ServerAcknowledgmentPacket));
 	memcpy(buffer.Buffer, &ACKNOWLEDGMENT_ID, sizeof(ACKNOWLEDGMENT_ID));
 	*buffer.size = 8;
 }
-void ServerPlayerPacket::Serialise(SendBuffer& buffer)
+void ServerPlayerPacket::Serialise(SendBuffer& buffer) const
 {	
 	//memcpy(buffer.Buffer, &PLAYER_ID, sizeof(PLAYER_ID));
 

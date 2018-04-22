@@ -2,7 +2,6 @@
 #include <iostream>
 #include <thread>
 #include "Timer.h"
-#include "atltime.h" // GetCurrentTime
 #include "boost\asio.hpp"
 #include "Commuication.h"
 #include "InterestManagement.h"

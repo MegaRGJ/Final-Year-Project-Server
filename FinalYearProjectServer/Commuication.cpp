@@ -69,7 +69,7 @@ void Communication::HandleReceive(const boost::system::error_code& error, std::s
 	}
 }
 
-void Communication::Send(udp::endpoint remoteEndpoint, ServerPacket& packet)
+void Communication::Send(udp::endpoint remoteEndpoint, const ServerPacket& packet)
 {
 	try
 	{

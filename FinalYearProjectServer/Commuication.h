@@ -15,7 +15,7 @@ public:
 	Communication(boost::asio::io_service& io_service);
 	~Communication();
 	
-	void Send(udp::endpoint remoteEndpoint, ServerPacket& packet);
+	void Send(udp::endpoint remoteEndpoint, const ServerPacket& packet);
 
 	ClientPositionPacket GetClientPositionPacket();
 	std::vector<ClientPositionPacket> GetAllClientPositionPackets();

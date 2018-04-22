@@ -58,13 +58,13 @@ struct ConnectData
 
 struct ServerPacket
 {
-	virtual void Serialise(SendBuffer&) = 0;
+	virtual void Serialise(SendBuffer&) const = 0;
 };
 
-struct ServerAcknowledgmentPacket : ServerPacket
+struct ServerAcknowledgmentPacket : ServerPacket 
 {
 	int ClientID;
-	virtual void Serialise(SendBuffer&);
+	virtual void Serialise(SendBuffer&) const;
 	
 	ServerAcknowledgmentPacket() {}
 	ServerAcknowledgmentPacket(int id)
@@ -73,7 +73,7 @@ struct ServerAcknowledgmentPacket : ServerPacket
 	}
 };
 
-struct ServerPlayerPacket : ServerPacket
+struct ServerPlayerPacket : ServerPacket 
 {
 	int ClientID; 
 	float X; 
@@ -81,7 +81,7 @@ struct ServerPlayerPacket : ServerPacket
 	float Z; 
 	float Rotation; 
 	char Username[USERNAME_SIZE];
-	virtual void Serialise(SendBuffer&);
+	virtual void Serialise(SendBuffer&) const;
 
 	ServerPlayerPacket() {}
 	ServerPlayerPacket(int clientID, float x, float y, float z, float r, char username[])

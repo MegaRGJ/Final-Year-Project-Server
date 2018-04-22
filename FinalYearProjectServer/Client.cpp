@@ -11,6 +11,7 @@ Client::Client(udp::endpoint clientEndPoint, ClientConnectPacket packet, int cli
 	m_ClientID = new int(clientID);
 	m_Connected = new bool(true);
 	m_Seen = new std::vector<Client*>();
+	m_Bound = new Rect(0, 0, 5, 5);
 }
 
 Client::~Client()
@@ -19,12 +20,20 @@ Client::~Client()
 	delete m_RotationY;
 	delete m_ClientID;
 	delete m_Connected;
-	delete m_Seen;
+	delete[] m_Seen;
+	delete m_Bound;
 }
 
 const Vector3* Client::GetPos()
 {
 	return m_Position;
+}
+
+const Rect Client::GetBounds()
+{
+	m_Bound->X = m_Position->X;
+	m_Bound->Y = m_Position->Y;
+	return *m_Bound;
 }
 
 void Client::SetPos(float x, float y, float z)

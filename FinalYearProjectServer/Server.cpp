@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Server.h"
+#include <chrono>
 
 Server::Server()
 {
@@ -19,6 +20,8 @@ void Server::RunServer()
 	try
 	{
 		std::cout << "Server Starting..." << std::endl;
+		HandleInterestInput();
+		HandleIPAddress();
 
 		m_ReceiveThread = new std::thread(&Server::StartReceiveThread, this);
 		m_ReceiveThread->detach();
@@ -26,19 +29,24 @@ void Server::RunServer()
 		m_InputThread = new std::thread(&Server::StartInputThread, this);
 		m_InputThread->detach();
 
-		double previousTime = GetCurrentTime();
+		auto getCurrentTimeMilli = []() -> double //hmmm
+		{
+			return std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+		};
+
+		double previousTime = getCurrentTimeMilli();
 		double lag = 0.0;
+		double timeOutput = 0;
 
 		while (true)
 		{
-			double currentTime = GetCurrentTime();
+			double currentTime = getCurrentTimeMilli();
 			double elapsedTime = currentTime - previousTime;
 			previousTime = currentTime;
 			lag += elapsedTime;
 
 			while (lag >= MS_INTERVAL)
 			{
-				//std::cout << "Frame. " << lag << std::endl;
 
 				HandleReceivedPacketData();
 				
@@ -46,7 +54,16 @@ void Server::RunServer()
 
 				SendPositionalPacketData();
 
+				timeOutput = timeOutput + MS_INTERVAL;
+
+				if (1000 <= timeOutput)
+				{
+					std::cout << "Total Players: " << m_IM->GetClientListSize() << std::endl;
+					timeOutput = 0;
+				}
+
 				lag -= MS_INTERVAL;
+
 			}
 		}
 	}
@@ -110,9 +127,44 @@ void Server::UpdateDisconnectData()
 
 	for (size_t i = 0; i < disconnectPacket.size(); i++)
 	{
-		ConfirmAcknowledgmentPacketArrived(disconnectPacket[i].ClientID);
+		//ConfirmAcknowledgmentPacketArrived(disconnectPacket[i].ClientID);
 		m_IM->GetClientList()[disconnectPacket[i].ClientID]->SetConnectionStatus(false);
 	}
+}
+
+void Server::HandleInterestInput()
+{
+	std::cout << "Enter (q) to enable QuadTree or (e) to enable Euclidean Distance" << std::endl;
+	std::string input;
+	std::cin >> input;
+
+	if (input == "q")
+	{
+		USE_QUADTREE_VS_AURA = true;
+	}
+	else if (input == "e")
+	{
+		USE_QUADTREE_VS_AURA = false;
+	}
+	else
+	{
+		HandleInterestInput();
+	}
+}
+
+void Server::HandleIPAddress()
+{
+	std::cout << "Enter IP - (127.0.0.1)" << std::endl;
+	std::string input;
+	std::cin >> input;
+
+	IP_ADDRESS = boost::asio::ip::address::from_string(input);
+
+	std::cout << "Enter Port - (4739)" << std::endl;
+	std::string input2;
+	std::cin >> input2;
+
+	PORT = atoi(input2.c_str());
 }
 
 void Server::UpdateClientPositionData()
@@ -154,6 +206,7 @@ void Server::SendPositionalPacketData()
 				memcpy(packet.Username, m_IM->GetClientList()[i]->GetUsername(), USERNAME_SIZE);
 
 				int seenSize = m_IM->GetClientList()[i]->GetSeenClients().size();
+				
 				//Send
 				for (size_t j = 0; j < seenSize; j++)
 				{
@@ -162,18 +215,6 @@ void Server::SendPositionalPacketData()
 						m_Communication->Send(m_IM->GetClientList()[j]->GetEndpoint(), ServerPlayerPacket{ packet });
 					}
 				}
-
-				//Send too all
-				//for (size_t j = 0; j < m_IM->GetClientListSize(); j++)
-				//{
-				//	std::cout << "Send To: " << m_IM->GetClientList()[j]->GetID() << std::endl;
-
-				//	if (m_IM->GetClientList()[j]->GetConnectionStatus())
-				//	{
-				//		m_Communication->Send(m_IM->GetClientList()[j]->GetEndpoint(), ServerPlayerPacket{ packet });
-				//	}
-				//}
-
 			}
 		}
 	}

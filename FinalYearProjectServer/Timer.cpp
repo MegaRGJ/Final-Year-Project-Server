@@ -17,5 +17,4 @@ int Timer::GetTimerTimeInMilliseconds()
 	Ms msTime = std::chrono::duration_cast<Ms>(time);
 
 	return msTime.count();
-
 }

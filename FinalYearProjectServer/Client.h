@@ -24,6 +24,7 @@ public:
 	const int*					GetID();
 	const udp::endpoint			GetEndpoint();
 	const char*					GetUsername();
+	const Rect					GetBounds();
 private:
 	udp::endpoint m_EndPoint;
 	char m_Username[20];
@@ -31,6 +32,7 @@ private:
 	float* m_RotationY;
 	int* m_ClientID;
 	bool* m_Connected;
+	Rect* m_Bound;
 
 	int IndexBinarySearch(std::vector<Client*> &SeenBy, int start, int end, int id);
 	std::vector<Client*>* m_Seen;

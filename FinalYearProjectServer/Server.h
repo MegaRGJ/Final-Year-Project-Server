@@ -28,7 +28,8 @@ private:
 	void UpdateConnectionData();
 	void UpdateClientPositionData();
 	void UpdateDisconnectData();
-
+	void HandleInterestInput();
+	void HandleIPAddress();
 	void ConfirmAcknowledgmentPacketArrived(int clientid);
 
 };

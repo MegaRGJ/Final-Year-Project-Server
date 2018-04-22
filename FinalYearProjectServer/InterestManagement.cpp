@@ -5,6 +5,7 @@
 InterestManagement::InterestManagement()
 {
 	m_ClientListSize = 0; // value is currently used for ID.
+	m_QuadTree = std::make_unique<QuadTree>(0, Rect(0, 0, 500, 500));
 }
 
 InterestManagement::~InterestManagement()
@@ -17,24 +18,52 @@ InterestManagement::~InterestManagement()
 
 void InterestManagement::UpdateInterest()
 {
-	//for each client I need to update there seenby stuff
-	for (size_t i = 0; i < m_ClientListSize; i++)
+	if (USE_QUADTREE_VS_AURA) // QuadTree // Grid
 	{
-		if (m_ClientList[i]->GetConnectionStatus())
+		m_QuadTree->RemoveAll();
+
+		for (size_t i = 0; i < m_ClientListSize; i++)
 		{
-			Vector3 currentClient = *m_ClientList[i]->GetPos();
-			Vector3 otherClient;
-			m_ClientList[i]->ClearSeenClients();
-
-			for (size_t j = 0; j < m_ClientListSize; j++)
+			if (m_ClientList[i]->GetConnectionStatus())
 			{
-				if (m_ClientList[j]->GetConnectionStatus())
-				{
-					otherClient = *m_ClientList[j]->GetPos();
+				m_QuadTree->Add(m_ClientList[i]);
+			}
+		}
 
-					if (EuclideanDistance(currentClient, otherClient) < AURA_DISTANCE)
+		for (size_t i = 0; i < m_ClientListSize; i++)
+		{
+			if (m_ClientList[i]->GetConnectionStatus())
+			{
+				m_ClientList[i]->ClearSeenClients();
+				std::vector<Client*> tempClients = m_QuadTree->GetClients(m_ClientList[i]);
+
+				for (size_t i = 0; i < tempClients.size(); i++)
+				{
+					m_ClientList[i]->AddSeenClient(tempClients[i]);
+				}
+			}
+		}
+	}
+	else //Euclidean Distance // Aura
+	{
+		for (size_t i = 0; i < m_ClientListSize; i++)
+		{
+			if (m_ClientList[i]->GetConnectionStatus())
+			{
+				Vector3 currentClient = *m_ClientList[i]->GetPos();
+				Vector3 otherClient;
+				m_ClientList[i]->ClearSeenClients();
+		
+				for (size_t j = 0; j < m_ClientListSize; j++)
+				{
+					if (m_ClientList[j]->GetConnectionStatus())
 					{
-						m_ClientList[i]->AddSeenClient(m_ClientList[j]); // Adds a seen client
+						otherClient = *m_ClientList[j]->GetPos();
+		
+						if (EuclideanDistance(currentClient, otherClient) < AURA_DISTANCE)
+						{
+							m_ClientList[i]->AddSeenClient(m_ClientList[j]); // Adds a seen client
+						}
 					}
 				}
 			}

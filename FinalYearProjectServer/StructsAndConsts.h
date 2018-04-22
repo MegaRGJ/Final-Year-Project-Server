@@ -2,8 +2,8 @@
 #pragma pack 1
 #include "boost\asio.hpp"
 
-const int RECEIVE_BUFFER_SIZE = 4096;
-const int SEND_BUFFER_SIZE = 4096;
+const int RECEIVE_BUFFER_SIZE = 16384;
+const int SEND_BUFFER_SIZE = 16384;
 const int USERNAME_SIZE = 20;
 const int PLAYER_ID = 1;
 const int CONNECT_ID = 2;
@@ -13,6 +13,10 @@ const int ACKNOWLEDGMENT_ID = 4;
 const float AURA_DISTANCE = 50;
 
 const double MS_INTERVAL = 16;
+
+extern bool USE_QUADTREE_VS_AURA;
+extern boost::asio::ip::address IP_ADDRESS;
+extern int PORT;
 
 struct SendBuffer
 {
@@ -103,5 +107,22 @@ struct Vector3
 		X = x;
 		Y = y;
 		Z = z;
+	}
+};
+
+struct Rect
+{
+	float X;
+	float Y;
+	float Width;
+	float Height;
+
+	Rect() {}
+	Rect(float x, float y, float width, float height)
+	{
+		X = x;
+		Y = y;
+		Width = width;
+		Height = height;
 	}
 };
